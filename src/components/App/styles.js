@@ -5,3 +5,10 @@ export const Container = styled.div`
   max-width: 500px;
   margin: 0 auto;
 `;
+
+export const Header = styled.header`
+  display: flex;
+  justify-content: center;
+  margin-top: 74px;
+  margin-bottom: 48px;
+`;
