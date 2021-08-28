@@ -24,17 +24,22 @@ export default function Home() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
-      .then(async (response) => {
+
+    async function loadContacts() {
+      try {
+        const response = await fetch(`http://localhost:3001/contactss?orderBy=${orderBy}`);
+
+        await delay(500);
+
         const json = await response.json();
         setContacts(json);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
+      } catch (err) {
+        console.log(err);
+      } finally {
         setIsLoading(false);
-      });
+      }
+    }
+    loadContacts();
   }, [orderBy]);
 
   function handleToggleOrderBy() {
