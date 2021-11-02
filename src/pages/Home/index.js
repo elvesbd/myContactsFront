@@ -11,6 +11,7 @@ import trash from '../../assets/images/icons/trash.svg';
 
 import Loader from '../../components/Loader';
 import ContactsService from '../../services/ContactsService';
+import { APIError } from '../../errors/APIError';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -23,14 +24,18 @@ export default function Home() {
   )), [contacts, searchTerm]);
 
   useEffect(() => {
-    setIsLoading(true);
-
     async function loadContacts() {
       try {
+        setIsLoading(true);
         const contactsList = await ContactsService.listContacts(orderBy);
+
         setContacts(contactsList);
-      } catch (err) {
-        console.log('Caiu no erro', err);
+      } catch (error) {
+        console.log('Name:', error.name);
+        console.log('Message:', error.message);
+        console.log('Response:', error.response);
+        console.log('Body:', error.body);
+        console.log(error);
       } finally {
         setIsLoading(false);
       }

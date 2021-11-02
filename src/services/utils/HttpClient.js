@@ -1,4 +1,5 @@
 import delay from '../../utils/delay';
+import { APIError } from '../../errors/APIError';
 
 class HttpClient {
   constructor(baseURL) {
@@ -9,10 +10,18 @@ class HttpClient {
     await delay(500);
     const response = await fetch(`${this.baseURL}${path}`);
 
-    if (response.ok) {
-      return response.json();
+    let body = null;
+    const contentType = response.headers.get('Content-Type');
+
+    if (contentType.includes('application/json')) {
+      body = await response.json();
     }
-    throw new Error('Erro na API');
+
+    if (response.ok) {
+      return body;
+    }
+
+    throw new APIError(response, body);
   }
 }
 
