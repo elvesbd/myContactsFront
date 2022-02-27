@@ -28,6 +28,7 @@
     "no-console": "off",
     "no-unused-vars": "off",
     "import/named": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-empty": ["error", { "allowEmptyCatch": true}]
   }
 }

@@ -28,9 +28,11 @@ export default function ContactForm({ buttonLabel }) {
 
   useEffect(() => {
     async function loadCategories() {
-      const categoriesList = await CategoriesService.listCategories();
+      try {
+        const categoriesList = await CategoriesService.listCategories();
 
-      setCategories(categoriesList);
+        setCategories(categoriesList);
+      } catch {}
     }
     loadCategories();
   }, []);
@@ -102,7 +104,7 @@ export default function ContactForm({ buttonLabel }) {
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
         >
-          <option value="">Categoria</option>
+          <option value="">Sem categoria</option>
 
           {categories.map((category) => (
             <option key={category.id} value={category.id}>{category.name}</option>
