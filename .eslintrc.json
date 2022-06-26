@@ -15,10 +15,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "react-hooks"
-  ],
+  "plugins": ["react", "react-hooks"],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", "jsx"] }],
     "react/react-in-jsx-scope": "off",
@@ -29,6 +26,6 @@
     "no-unused-vars": "off",
     "import/named": "off",
     "class-methods-use-this": "off",
-    "no-empty": ["error", { "allowEmptyCatch": true}]
+    "no-empty": ["error", { "allowEmptyCatch": true }]
   }
 }

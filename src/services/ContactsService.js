@@ -10,7 +10,8 @@ class ContactsService {
   }
 
   async createContacts(contact) {
-    return this.httpClient.get('/contacts', contact);
+    console.log('creating contacts', contact);
+    return this.httpClient.post('/contacts', contact);
   }
 }
 
