@@ -12,7 +12,7 @@ export default function NewContact() {
         phone: formData.phone,
         category_id: formData.categoryId,
       };
-      await ContactsService.createContacts(contact);
+      await ContactsService.createContact(contact);
 
       toast({
         type: 'success',
