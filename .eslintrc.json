@@ -26,6 +26,7 @@
     "no-unused-vars": "off",
     "import/named": "off",
     "class-methods-use-this": "off",
-    "no-empty": ["error", { "allowEmptyCatch": true }]
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "max-len": "off"
   }
 }
