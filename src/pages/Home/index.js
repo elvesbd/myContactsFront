@@ -2,8 +2,7 @@
 import { Link } from 'react-router-dom';
 import {
   Container,
-  InputSearchContainer,
-  Header, ListHeader,
+  ListHeader,
   Card, ErrorContainer,
   EmptyListContainer,
   SearchNotFoundContainer,
@@ -20,6 +19,8 @@ import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import Modal from '../../components/Modal';
 import useHome from './useHome';
+import { InputSearch } from './components/InputSearch';
+import { Header } from './components/Header';
 
 export default function Home() {
   const {
@@ -40,6 +41,9 @@ export default function Home() {
     handleConfirmDeleteContact,
   } = useHome();
 
+  console.log(contacts.length);
+  console.log(filteredContacts.length);
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
@@ -57,35 +61,14 @@ export default function Home() {
       </Modal>
 
       {contacts.length > 0 && (
-        <InputSearchContainer>
-          <input
-            value={searchTerm}
-            type="text"
-            placeholder="Pesquisar contato pelo nome..."
-            onChange={handleChangeSearchTerm}
-          />
-        </InputSearchContainer>
+        <InputSearch value={searchTerm} onChange={handleChangeSearchTerm} />
       ) }
 
-      <Header justifyContent={
-        // eslint-disable-next-line no-nested-ternary
-        hasError
-          ? 'flex-end'
-          : (
-            contacts.length > 0
-              ? 'space-between'
-              : 'center'
-          )
-        }
-      >
-        {(!hasError && contacts.length > 0) && (
-          <strong>
-            {filteredContacts.length}
-            {filteredContacts.length === 1 ? ' contato' : ' contatos'}
-          </strong>
-        )}
-        <Link to="/new">Novo contato</Link>
-      </Header>
+      <Header
+        hasError={hasError}
+        qtyOfContacts={contacts.length}
+        qtyOfFilteredContacts={filteredContacts.length}
+      />
 
       {hasError && (
         <ErrorContainer>
