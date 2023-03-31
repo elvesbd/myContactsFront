@@ -8,24 +8,41 @@ export default function useAnimatedList(initialValue = []) {
   const animatedRefs = useRef(new Map());
   const animationEndListeners = useRef(new Map());
 
-  const handleAnimationEnd = useCallback((id) => {
-    setItems((prevState) => prevState.filter((item) => item.id !== id));
-    setPendingRemovalItemsIds((prevState) => prevState.filter((itemId) => itemId !== id));
+  const handleAnimationEnd = useCallback((itemId) => {
+    const removeListener = animationEndListeners.current.get(itemId);
+    removeListener();
+
+    animationEndListeners.current.delete(itemId);
+    animatedRefs.current.delete(itemId);
+
+    setItems((prevState) => prevState.filter((item) => item.id !== itemId));
+    setPendingRemovalItemsIds((prevState) => prevState.filter((id) => itemId !== id));
   }, []);
 
   useEffect(() => {
     pendingRemovalItemsIds.forEach((itemId) => {
       const animatedRef = animatedRefs.current.get(itemId);
+      const animatedElement = animatedRef?.current;
       const alreadyHasListener = animationEndListeners.current.has(itemId);
 
-      if (animatedRef?.current && !alreadyHasListener) {
-        animationEndListeners.current.set(itemId, true);
-        animatedRef.current.addEventListener('animationend', () => {
-          handleAnimationEnd(itemId);
-        });
+      if (animatedElement && !alreadyHasListener) {
+        const onAnimationend = () => handleAnimationEnd(itemId);
+        const removeListener = () => {
+          animatedElement.removeEventListener('animationend', onAnimationend);
+        };
+
+        animatedElement.addEventListener('animationend', onAnimationend);
+        animationEndListeners.current.set(itemId, removeListener);
       }
     });
   }, [pendingRemovalItemsIds, handleAnimationEnd]);
+
+  useEffect(() => {
+    const removeListeners = animationEndListeners.current;
+    return () => {
+      removeListeners.forEach((removeListener) => removeListener());
+    };
+  }, []);
 
   const handleRemoveItem = useCallback((id) => {
     setPendingRemovalItemsIds((prevState) => [...prevState, id]);
