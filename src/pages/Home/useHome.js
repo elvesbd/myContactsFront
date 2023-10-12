@@ -1,25 +1,22 @@
 import {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, startTransition, useState,
 } from 'react';
-import ContactsService from '../../services/ContactsService';
 
 import toast from '../../utils/toast';
+import ContactsService from '../../services/ContactsService';
 
 export default function useHome() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
+  const [hasError, setHasError] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [isDeletedModalVisible, setIsDeletedModalVisible] = useState(false);
-  const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
+  const [filteredContacts, setFilteredContacts] = useState([]);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
+  const [isDeletedModalVisible, setIsDeletedModalVisible] = useState(false);
 
   // import { APIError } from '../../errors/APIError';
-
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )), [contacts, searchTerm]);
 
   const loadContacts = useCallback(async () => {
     try {
@@ -28,6 +25,7 @@ export default function useHome() {
 
       setHasError(false);
       setContacts(contactsList);
+      setFilteredContacts(contactsList);
     } catch {
       setHasError(true);
       setContacts([]);
@@ -40,24 +38,31 @@ export default function useHome() {
     loadContacts();
   }, [loadContacts]);
 
-  function handleToggleOrderBy() {
+  const handleToggleOrderBy = useCallback(() => {
     setOrderBy(
       (prevState) => (prevState === 'asc' ? 'desc' : 'asc'),
     );
-  }
+  }, []);
 
   function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    startTransition(() => {
+      setFilteredContacts(contacts.filter((contact) => (
+        contact.name.toLowerCase().includes(value.toLowerCase())
+      )));
+    });
   }
 
   function handleTryAgain() {
     loadContacts();
   }
 
-  function handleDeleteContact(contact) {
+  const handleDeleteContact = useCallback((contact) => {
     setContactBeingDeleted(contact);
     setIsDeletedModalVisible(true);
-  }
+  }, []);
 
   function handleCloseDeleteModal() {
     setIsDeletedModalVisible(false);
@@ -89,20 +94,20 @@ export default function useHome() {
   }
 
   return {
-    contacts,
     orderBy,
-    searchTerm,
-    isLoading,
-    contactBeingDeleted,
+    contacts,
     hasError,
-    isDeletedModalVisible,
+    isLoading,
+    searchTerm,
     isLoadingDelete,
     filteredContacts,
-    handleToggleOrderBy,
-    handleChangeSearchTerm,
+    contactBeingDeleted,
+    isDeletedModalVisible,
     handleTryAgain,
+    handleToggleOrderBy,
     handleDeleteContact,
     handleCloseDeleteModal,
+    handleChangeSearchTerm,
     handleConfirmDeleteContact,
   };
 }
