@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, startTransition, useState,
+  useCallback, useEffect, useDeferredValue, useState, useMemo,
 } from 'react';
 
 import toast from '../../utils/toast';
@@ -11,12 +11,15 @@ export default function useHome() {
   const [hasError, setHasError] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [filteredContacts, setFilteredContacts] = useState([]);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
   const [isDeletedModalVisible, setIsDeletedModalVisible] = useState(false);
 
-  // import { APIError } from '../../errors/APIError';
+  const deferredSearchTerm = useDeferredValue(searchTerm);
+
+  const filteredContacts = useMemo(() => contacts.filter((contact) => (
+    contact.name.toLowerCase().includes(deferredSearchTerm.toLowerCase())
+  )), [contacts, deferredSearchTerm]);
 
   const loadContacts = useCallback(async () => {
     try {
@@ -25,7 +28,6 @@ export default function useHome() {
 
       setHasError(false);
       setContacts(contactsList);
-      setFilteredContacts(contactsList);
     } catch {
       setHasError(true);
       setContacts([]);
@@ -45,14 +47,7 @@ export default function useHome() {
   }, []);
 
   function handleChangeSearchTerm(event) {
-    const { value } = event.target;
-    setSearchTerm(value);
-
-    startTransition(() => {
-      setFilteredContacts(contacts.filter((contact) => (
-        contact.name.toLowerCase().includes(value.toLowerCase())
-      )));
-    });
+    setSearchTerm(event.target.value);
   }
 
   function handleTryAgain() {
