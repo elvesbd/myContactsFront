@@ -17,9 +17,9 @@ function ToastMessage({
     };
   }, [message, onRemoveMessage]);
 
-  function handleRemoveToast() {
+  const handleRemoveToast = () => {
     onRemoveMessage(message.id);
-  }
+  };
 
   return (
     <Container
