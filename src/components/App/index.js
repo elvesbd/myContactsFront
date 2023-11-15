@@ -1,7 +1,7 @@
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
 
-import Routes from '../../Routes';
+import Router from '../../Router';
 
 import logo from '../../assets/images/logo.svg';
 
@@ -22,7 +22,7 @@ function App() {
             <img src={logo} alt="Logo" />
           </Header>
 
-          <Routes />
+          <Router />
         </Container>
       </ThemeProvider>
     </BrowserRouter>

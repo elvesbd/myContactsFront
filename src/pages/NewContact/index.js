@@ -1,6 +1,6 @@
-import ContactForm from '../../components/ContactForm';
-import PageHeader from '../../components/PageHeader';
 import useNewContact from './useNewContact';
+import PageHeader from '../../components/PageHeader';
+import ContactForm from '../../components/ContactForm';
 
 export default function NewContact() {
   const { contactFormRef, handleSubmit } = useNewContact();
@@ -9,7 +9,11 @@ export default function NewContact() {
     <>
       <PageHeader title="Novo contato" />
 
-      <ContactForm buttonLabel="Cadastrar" onSubmit={handleSubmit} ref={contactFormRef} />
+      <ContactForm
+        ref={contactFormRef}
+        buttonLabel="Cadastrar"
+        onSubmit={handleSubmit}
+      />
     </>
   );
 }
